@@ -3,6 +3,8 @@ import { getSupabase } from '@/lib/supabase';
 import Link from 'next/link';
 import { categories, getCategoryBySlug } from '@/lib/categories';
 
+export const dynamic = 'force-dynamic';
+
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
   const category = getCategoryBySlug(slug);

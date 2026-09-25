@@ -2,6 +2,8 @@ import { Metadata } from 'next';
 import { getSupabase } from '@/lib/supabase';
 import Link from 'next/link';
 
+export const dynamic = 'force-dynamic';
+
 export const metadata: Metadata = {
   title: 'Blog Sagrada Magia | Espiritualidade e Bem-estar',
   description: 'Conteúdo exclusivo sobre meditação, cristais, tarô, rituais e espiritualidade.',
