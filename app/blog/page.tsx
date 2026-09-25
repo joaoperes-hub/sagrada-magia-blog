@@ -1,5 +1,5 @@
 import { Metadata } from 'next';
-import { getSupabaseAdmin } from '@/lib/supabase';
+import { getSupabase } from '@/lib/supabase';
 import Link from 'next/link';
 
 export const metadata: Metadata = {
@@ -14,7 +14,7 @@ export const metadata: Metadata = {
 
 export default async function BlogHome() {
   try {
-    const supabase = getSupabaseAdmin();
+    const supabase = getSupabase();
 
     const { data: posts } = await supabase
       .from('blog_posts')

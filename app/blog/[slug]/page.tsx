@@ -1,9 +1,9 @@
 import { Metadata } from 'next';
-import { getSupabaseAdmin } from '@/lib/supabase';
+import { getSupabase, getSupabaseAdmin } from '@/lib/supabase';
 import Link from 'next/link';
 
 export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
-  const supabase = getSupabaseAdmin();
+  const supabase = getSupabase();
   const { data: post } = await supabase
     .from('blog_posts')
     .select('*')
@@ -30,7 +30,7 @@ export async function generateMetadata({ params }: { params: { slug: string } })
 
 export default async function BlogPostPage({ params }: { params: { slug: string } }) {
   try {
-    const supabase = getSupabaseAdmin();
+    const supabase = getSupabase();
 
     // Buscar post
     const { data: post } = await supabase
@@ -54,11 +54,16 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
       );
     }
 
-    // Incrementar visualizações
-    await supabase
-      .from('blog_posts')
-      .update({ views: (post.views || 0) + 1 })
-      .eq('id', post.id);
+    // Incrementar visualizações (usa admin client, não quebra se falhar)
+    try {
+      const adminSupabase = getSupabaseAdmin();
+      await adminSupabase
+        .from('blog_posts')
+        .update({ views: (post.views || 0) + 1 })
+        .eq('id', post.id);
+    } catch (e) {
+      // Silently ignore - views increment is non-critical
+    }
 
     return (
       <div className="min-h-screen bg-sagrada-cream">

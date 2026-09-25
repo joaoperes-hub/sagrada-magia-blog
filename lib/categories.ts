@@ -63,6 +63,13 @@ export const categories: Category[] = [
     description: 'Significados e interpretações numéricas',
     count: 9,
   },
+  {
+    name: 'Energia',
+    slug: 'energia',
+    icon: '⚡',
+    description: 'Práticas energéticas, limpeza e equilíbrio vibracional',
+    count: 0,
+  },
 ];
 
 export function getCategoryBySlug(slug: string): Category | undefined {

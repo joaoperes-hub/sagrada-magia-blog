@@ -1,5 +1,5 @@
 import { Metadata } from 'next';
-import { getSupabaseAdmin } from '@/lib/supabase';
+import { getSupabase } from '@/lib/supabase';
 import Link from 'next/link';
 import { categories, getCategoryBySlug } from '@/lib/categories';
 
@@ -13,7 +13,7 @@ export async function generateMetadata({ params }: { params: { slug: string } })
 
 export default async function CategoryPage({ params }: { params: { slug: string } }) {
   try {
-    const supabase = getSupabaseAdmin();
+    const supabase = getSupabase();
     const category = getCategoryBySlug(params.slug);
 
     if (!category) {
