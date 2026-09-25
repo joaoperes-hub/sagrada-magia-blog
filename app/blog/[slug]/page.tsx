@@ -2,12 +2,13 @@ import { Metadata } from 'next';
 import { getSupabase, getSupabaseAdmin } from '@/lib/supabase';
 import Link from 'next/link';
 
-export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+  const { slug } = await params;
   const supabase = getSupabase();
   const { data: post } = await supabase
     .from('blog_posts')
     .select('*')
-    .eq('slug', params.slug)
+    .eq('slug', slug)
     .eq('published', true)
     .single();
 
@@ -28,15 +29,16 @@ export async function generateMetadata({ params }: { params: { slug: string } })
   };
 }
 
-export default async function BlogPostPage({ params }: { params: { slug: string } }) {
+export default async function BlogPostPage({ params }: { params: Promise<{ slug: string }> }) {
   try {
+    const { slug } = await params;
     const supabase = getSupabase();
 
     // Buscar post
     const { data: post } = await supabase
       .from('blog_posts')
       .select('*')
-      .eq('slug', params.slug)
+      .eq('slug', slug)
       .eq('published', true)
       .single();
 

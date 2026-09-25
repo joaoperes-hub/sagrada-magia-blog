@@ -3,18 +3,20 @@ import { getSupabase } from '@/lib/supabase';
 import Link from 'next/link';
 import { categories, getCategoryBySlug } from '@/lib/categories';
 
-export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
-  const category = getCategoryBySlug(params.slug);
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+  const { slug } = await params;
+  const category = getCategoryBySlug(slug);
   return {
     title: `${category?.name || 'Categoria'} | Blog Sagrada Magia`,
     description: category?.description || 'Posts da categoria',
   };
 }
 
-export default async function CategoryPage({ params }: { params: { slug: string } }) {
+export default async function CategoryPage({ params }: { params: Promise<{ slug: string }> }) {
   try {
+    const { slug } = await params;
     const supabase = getSupabase();
-    const category = getCategoryBySlug(params.slug);
+    const category = getCategoryBySlug(slug);
 
     if (!category) {
       return (
