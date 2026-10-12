@@ -56,22 +56,31 @@ export default function AdminPostsPage() {
     }
   };
 
-  const handleLogin = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
     const username = formData.get('username') as string;
     const password = formData.get('password') as string;
 
-    const validUsername = process.env.NEXT_PUBLIC_ADMIN_USERNAME || 'admin';
-    const validPassword = process.env.NEXT_PUBLIC_ADMIN_PASSWORD || 'admin123';
-
-    if (username === validUsername && password === validPassword) {
-      localStorage.setItem('admin_token', password);
-      setToken(password);
+    try {
+      const res = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password }),
+      });
+      const data = await res.json();
+      if (!res.ok || !data.ok) {
+        setError(data.error || 'Usuário ou senha incorretos');
+        return;
+      }
+      // Store the signed token (used for Authorization: Bearer in API calls)
+      localStorage.setItem('admin_token', data.token);
+      setToken(data.token);
       setShowLoginForm(false);
-      loadPosts(password);
-    } else {
-      setError('Usuário ou senha incorretos');
+      loadPosts(data.token);
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Erro ao fazer login';
+      setError(msg);
     }
   };
 
