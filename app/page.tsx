@@ -2,6 +2,7 @@ import { Metadata } from 'next';
 import { getSupabase } from '@/lib/supabase';
 import Link from 'next/link';
 import { categories } from '@/lib/categories';
+import HeroCarousel from '@/components/HeroCarousel';
 
 export const dynamic = 'force-dynamic';
 
@@ -12,65 +13,31 @@ export const metadata: Metadata = {
 
 export default async function Home() {
   const supabase = getSupabase();
-  const { data: recentPosts } = await supabase
+  
+  // Fetch more posts for carousel + listing
+  const { data: allPosts } = await supabase
     .from('blog_posts')
     .select('id, title, slug, excerpt, featured_image, category, created_at, reading_time, author_name')
     .eq('published', true)
     .order('created_at', { ascending: false })
-    .limit(3);
+    .limit(8);
 
+  const posts = allPosts || [];
+  
+  // Add category info to posts for carousel
+  const postsWithCategory = posts.map(post => ({
+    ...post,
+    category_name: categories.find(c => c.slug === post.category)?.name || post.category,
+    category_icon: categories.find(c => c.slug === post.category)?.icon || '✨',
+  }));
+  
+  const recentPosts = posts.slice(0, 3);
   const featuredCategories = categories.slice(0, 6);
 
   return (
     <div className="min-h-screen">
-      {/* Hero Section */}
-      <section className="relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-sagrada-cream via-sagrada-pink-light/30 to-sagrada-mint-light/40" />
-        <div className="absolute top-20 left-10 w-64 h-64 bg-sagrada-magenta/5 blob animate-float" />
-        <div className="absolute bottom-10 right-10 w-48 h-48 bg-sagrada-mint/10 blob" />
-        <div className="absolute top-40 right-1/4 w-32 h-32 bg-sagrada-pink/8 rounded-full blur-2xl" />
-
-        <div className="relative max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-20 sm:py-28 lg:py-36">
-          <div className="text-center">
-            <p className="text-sagrada-magenta font-amiko font-semibold tracking-widest uppercase text-sm mb-4">
-              Bem-vindo ao universo sagrado
-            </p>
-            <h1 className="text-5xl sm:text-6xl lg:text-7xl font-amiko font-bold text-sagrada-black leading-tight mb-6">
-              Sagrada{' '}
-              <span className="text-gradient">Magia</span>
-            </h1>
-            <p className="text-xl sm:text-2xl text-sagrada-gray-dark font-niramit max-w-2xl mx-auto mb-10 leading-relaxed">
-              Conteúdo sobre espiritualidade, autoconhecimento e práticas ancestrais para
-              transformar sua jornada interior.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link
-                href="/blog"
-                className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-sagrada-magenta hover:bg-sagrada-magenta-dark text-white font-amiko font-semibold rounded-full transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-0.5"
-              >
-                Explorar o Blog
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                </svg>
-              </Link>
-              <a
-                href="https://sagradamagia.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-white/80 backdrop-blur border-2 border-sagrada-magenta/30 text-sagrada-magenta-dark hover:bg-sagrada-magenta hover:text-white hover:border-sagrada-magenta font-amiko font-semibold rounded-full transition-all duration-300"
-              >
-                Visitar a Loja
-              </a>
-            </div>
-          </div>
-        </div>
-
-        <div className="absolute bottom-0 left-0 right-0">
-          <svg viewBox="0 0 1440 60" fill="none" className="w-full">
-            <path d="M0 60V30C240 10 480 0 720 10C960 20 1200 40 1440 30V60H0Z" fill="var(--color-sagrada-cream)" />
-          </svg>
-        </div>
-      </section>
+      {/* Hero Carousel */}
+      <HeroCarousel posts={postsWithCategory} />
 
       {/* Categories Section */}
       <section className="py-16 sm:py-20">
@@ -119,7 +86,7 @@ export default async function Home() {
       </section>
 
       {/* Recent Posts Section */}
-      {recentPosts && recentPosts.length > 0 && (
+      {recentPosts.length > 0 && (
         <section className="py-16 sm:py-20 bg-white/50">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex items-end justify-between mb-12">
@@ -143,7 +110,7 @@ export default async function Home() {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
-              {recentPosts.map((post: any, index: number) => (
+              {recentPosts.map((post: any) => (
                 <Link key={post.id} href={`/blog/${post.slug}`} className="group">
                   <article className="bg-white rounded-2xl overflow-hidden card-hover border border-sagrada-magenta/5 h-full flex flex-col">
                     {post.featured_image ? (

@@ -63,6 +63,7 @@ export async function POST(request: NextRequest) {
       seo_description,
       seo_keywords,
       published,
+      blocks,
     } = body;
 
     if (!title || !slug || !excerpt || !content || !author_name) {
@@ -94,6 +95,7 @@ export async function POST(request: NextRequest) {
         published: published || false,
         reading_time: readTime,
         published_at: published ? new Date().toISOString() : null,
+        blocks: blocks || null,
       }])
       .select();
 

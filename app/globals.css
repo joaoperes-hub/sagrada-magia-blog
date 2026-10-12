@@ -231,3 +231,242 @@ html {
 .blob {
   border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
 }
+
+/* Blog Block Styles */
+.blog-image {
+  margin: 2em 0;
+  border-radius: 1rem;
+  overflow: hidden;
+}
+
+.blog-image img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.blog-image figcaption {
+  text-align: center;
+  font-size: 0.85rem;
+  color: #999588;
+  padding: 0.75rem 1rem;
+  font-family: 'Niramit', sans-serif;
+  font-style: italic;
+}
+
+.blog-banner {
+  margin: 2em 0;
+  border-radius: 1rem;
+  overflow: hidden;
+  position: relative;
+}
+
+.blog-banner a {
+  display: block;
+  text-decoration: none;
+  color: white;
+}
+
+.blog-banner img {
+  width: 100%;
+  height: 280px;
+  object-fit: cover;
+  display: block;
+}
+
+.blog-banner .banner-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0,0,0,0.6), rgba(0,0,0,0.1));
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 2rem;
+}
+
+.blog-banner .banner-overlay h3 {
+  font-family: 'Amiko', sans-serif;
+  font-weight: 700;
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+  color: white;
+}
+
+.blog-banner .banner-overlay p {
+  font-family: 'Niramit', sans-serif;
+  font-size: 1rem;
+  opacity: 0.9;
+  margin-bottom: 1rem;
+  color: white;
+}
+
+.blog-banner .banner-btn {
+  display: inline-block;
+  padding: 0.5rem 1.5rem;
+  background: rgba(255,255,255,0.2);
+  backdrop-filter: blur(4px);
+  border-radius: 9999px;
+  font-family: 'Amiko', sans-serif;
+  font-size: 0.875rem;
+  font-weight: 600;
+  transition: background 0.3s;
+}
+
+.blog-banner .banner-btn:hover {
+  background: rgba(255,255,255,0.35);
+}
+
+.blog-products {
+  margin: 2.5em 0;
+  padding: 2rem;
+  background: white;
+  border-radius: 1rem;
+  border: 1px solid rgba(209, 149, 203, 0.1);
+}
+
+.blog-products h3 {
+  font-family: 'Amiko', sans-serif;
+  font-weight: 700;
+  font-size: 1.25rem;
+  color: #9C6A95;
+  margin-bottom: 1.25rem;
+  text-align: center;
+}
+
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 1rem;
+}
+
+.product-card {
+  background: #FAF1DE;
+  border-radius: 0.75rem;
+  padding: 0.75rem;
+  text-align: center;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.product-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+.product-card img {
+  width: 100%;
+  height: 140px;
+  object-fit: cover;
+  border-radius: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.product-card h4 {
+  font-family: 'Amiko', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #252626;
+  margin-bottom: 0.25rem;
+  line-height: 1.3;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.product-card .price {
+  font-family: 'Niramit', sans-serif;
+  font-size: 0.9rem;
+  color: #9C6A95;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.product-btn {
+  display: inline-block;
+  padding: 0.4rem 1rem;
+  background: #D195CB;
+  color: white;
+  border-radius: 9999px;
+  font-family: 'Amiko', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background 0.3s;
+}
+
+.product-btn:hover {
+  background: #9C6A95;
+}
+
+.blog-about-store {
+  margin: 2.5em 0;
+  padding: 2rem;
+  background: linear-gradient(135deg, rgba(209,149,203,0.08), rgba(206,229,193,0.12));
+  border-radius: 1rem;
+  text-align: center;
+  border: 1px solid rgba(209, 149, 203, 0.15);
+}
+
+.blog-about-store h3 {
+  font-family: 'Amiko', sans-serif;
+  font-weight: 700;
+  font-size: 1.5rem;
+  color: #9C6A95;
+  margin-bottom: 0.75rem;
+}
+
+.blog-about-store > p {
+  font-family: 'Niramit', sans-serif;
+  font-size: 1rem;
+  color: #6D6D6D;
+  max-width: 600px;
+  margin: 0 auto 1.5rem;
+  line-height: 1.7;
+}
+
+.social-proof {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 1.5rem;
+}
+
+.social-proof img {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 0.5rem;
+  border: 2px solid rgba(209, 149, 203, 0.2);
+}
+
+.store-btn {
+  display: inline-block;
+  padding: 0.75rem 2rem;
+  background: #D195CB;
+  color: white;
+  border-radius: 9999px;
+  font-family: 'Amiko', sans-serif;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.3s;
+}
+
+.store-btn:hover {
+  background: #9C6A95;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(209,149,203,0.3);
+}
+
+/* Hero Carousel */
+@keyframes slideIn {
+  from { opacity: 0; transform: translateX(30px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes slideOut {
+  from { opacity: 1; transform: translateX(0); }
+  to { opacity: 0; transform: translateX(-30px); }
+}
