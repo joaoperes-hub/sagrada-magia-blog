@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import sharp from 'sharp';
+import { validateRequestAdmin } from '@/lib/auth';
 
 export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
@@ -16,6 +17,9 @@ const SIZE_PRESETS: Record<string, { width: number; height: number | null; fit: 
 
 export async function POST(request: NextRequest) {
   try {
+    if (!validateRequestAdmin(request)) {
+      return NextResponse.json({ error: 'Nao autorizado' }, { status: 401 });
+    }
     const formData = await request.formData();
     const file = formData.get('file') as File | null;
     const purpose = ((formData.get('purpose') as string) || 'content').toLowerCase();

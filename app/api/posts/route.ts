@@ -1,12 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getSupabaseAdmin } from '@/lib/supabase';
+import { validateRequestAdmin } from '@/lib/auth';
 
-function validateToken(request: NextRequest): boolean {
-  const token = request.headers.get('authorization')?.split('Bearer ')[1];
-  if (!token) return false;
-  const validPassword = process.env.NEXT_PUBLIC_ADMIN_PASSWORD || 'admin123';
-  return token === validPassword;
-}
 
 // GET /api/posts - Listar posts
 export async function GET(request: NextRequest) {
@@ -46,7 +41,7 @@ export async function GET(request: NextRequest) {
 // POST /api/posts - Criar novo post
 export async function POST(request: NextRequest) {
   try {
-    if (!validateToken(request)) {
+    if (!validateRequestAdmin(request)) {
       return NextResponse.json({ error: 'Não autorizado' }, { status: 401 });
     }
 

@@ -1,12 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getSupabaseAdmin } from '@/lib/supabase';
+import { validateRequestAdmin } from '@/lib/auth';
 
-function validateToken(request: NextRequest): boolean {
-  const token = request.headers.get('authorization')?.split('Bearer ')[1];
-  if (!token) return false;
-  const validPassword = process.env.NEXT_PUBLIC_ADMIN_PASSWORD || 'admin123';
-  return token === validPassword;
-}
 
 interface RouteContext {
   params: Promise<{ id: string }>;
@@ -38,7 +33,7 @@ export async function GET(request: NextRequest, context: RouteContext) {
 // PUT /api/posts/[id]
 export async function PUT(request: NextRequest, context: RouteContext) {
   try {
-    if (!validateToken(request)) {
+    if (!validateRequestAdmin(request)) {
       return NextResponse.json({ error: 'Não autorizado' }, { status: 401 });
     }
 
@@ -79,7 +74,7 @@ export async function PUT(request: NextRequest, context: RouteContext) {
 // DELETE /api/posts/[id]
 export async function DELETE(request: NextRequest, context: RouteContext) {
   try {
-    if (!validateToken(request)) {
+    if (!validateRequestAdmin(request)) {
       return NextResponse.json({ error: 'Não autorizado' }, { status: 401 });
     }
 

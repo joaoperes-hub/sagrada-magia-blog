@@ -40,7 +40,12 @@ export default function ImageUploader({
       formData.append('file', file);
       formData.append('purpose', purpose);
 
-      const res = await fetch('/api/upload-image', { method: 'POST', body: formData });
+      const token = typeof window !== 'undefined' ? localStorage.getItem('admin_token') : null;
+      const res = await fetch('/api/upload-image', {
+        method: 'POST',
+        body: formData,
+        headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+      });
       const data = await res.json();
 
       if (!res.ok) throw new Error(data.error || 'Erro no upload');
