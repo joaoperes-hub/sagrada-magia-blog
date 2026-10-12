@@ -20,7 +20,8 @@ export default function RootLayout({
           href="https://fonts.googleapis.com/css2?family=Amiko:wght@400;600;700&family=Niramit:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap"
           rel="stylesheet"
         />
-        {/* Google Analytics */}
+      </head>
+      <body className="min-h-screen bg-sagrada-cream font-niramit antialiased">
         <Script
           src="https://www.googletagmanager.com/gtag/js?id=G-HKM67P1ZLM"
           strategy="afterInteractive"
@@ -33,8 +34,6 @@ export default function RootLayout({
             gtag('config', 'G-HKM67P1ZLM');
           `}
         </Script>
-      </head>
-      <body className="min-h-screen bg-sagrada-cream font-niramit antialiased">
         <Header />
         {children}
       </body>
