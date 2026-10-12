@@ -1,5 +1,5 @@
 'use client';
-import React from 'react';
+import React, { useRef, useState } from 'react';
 import { AboutStoreBlock } from '@/lib/block-types';
 
 interface Props {
@@ -8,10 +8,26 @@ interface Props {
 }
 
 export default function AboutStoreBlockEditor({ block, onChange }: Props) {
-  const addImage = () => {
-    const url = prompt('URL da imagem:');
-    if (url) {
-      onChange({ ...block.data, imageUrls: [...block.data.imageUrls, url] });
+  const inputRef = useRef<HTMLInputElement>(null);
+  const [uploading, setUploading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const uploadImage = async (file: File) => {
+    setError(null);
+    setUploading(true);
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('purpose', 'about');
+      const res = await fetch('/api/upload-image', { method: 'POST', body: formData });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Erro no upload');
+      onChange({ ...block.data, imageUrls: [...block.data.imageUrls, data.url] });
+    } catch (e: any) {
+      setError(e.message);
+    } finally {
+      setUploading(false);
+      if (inputRef.current) inputRef.current.value = '';
     }
   };
 
@@ -41,15 +57,29 @@ export default function AboutStoreBlockEditor({ block, onChange }: Props) {
       {/* Imagens / Provas sociais */}
       <div>
         <div className="flex items-center justify-between mb-2">
-          <label className="text-sm font-amiko text-gray-600">Imagens & Provas Sociais</label>
+          <label className="text-sm font-amiko text-gray-600">
+            Imagens & Provas Sociais <span className="text-xs text-gray-400 font-niramit">(800×800, até ~150KB)</span>
+          </label>
           <button
             type="button"
-            onClick={addImage}
-            className="px-3 py-1 bg-sagrada-magenta/10 text-sagrada-magenta rounded text-sm font-amiko hover:bg-sagrada-magenta/20 transition-colors"
+            onClick={() => inputRef.current?.click()}
+            disabled={uploading}
+            className="px-3 py-1 bg-sagrada-magenta/10 text-sagrada-magenta rounded text-sm font-amiko hover:bg-sagrada-magenta/20 transition-colors disabled:opacity-50"
           >
-            + Adicionar imagem
+            {uploading ? 'Enviando...' : '📤 Adicionar imagem'}
           </button>
         </div>
+        <input
+          ref={inputRef}
+          type="file"
+          accept="image/*"
+          className="hidden"
+          onChange={(e) => {
+            const file = e.target.files?.[0];
+            if (file) uploadImage(file);
+          }}
+        />
+        {error && <p className="text-red-500 text-xs font-niramit mb-2">⚠️ {error}</p>}
         {block.data.imageUrls.length > 0 && (
           <div className="grid grid-cols-4 gap-2">
             {block.data.imageUrls.map((url, index) => (
@@ -58,7 +88,7 @@ export default function AboutStoreBlockEditor({ block, onChange }: Props) {
                 <button
                   type="button"
                   onClick={() => removeImage(index)}
-                  className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white rounded-full text-xs flex items-center justify-center"
+                  className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white rounded-full text-xs flex items-center justify-center hover:bg-red-600"
                 >
                   ×
                 </button>

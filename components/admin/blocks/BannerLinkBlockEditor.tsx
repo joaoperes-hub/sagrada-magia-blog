@@ -2,6 +2,7 @@
 import React from 'react';
 import { BannerLinkBlock } from '@/lib/block-types';
 import { categories } from '@/lib/categories';
+import ImageUploader from '../ImageUploader';
 
 interface Props {
   block: BannerLinkBlock;
@@ -11,12 +12,11 @@ interface Props {
 export default function BannerLinkBlockEditor({ block, onChange }: Props) {
   return (
     <div className="space-y-3">
-      <input
-        type="url"
+      <ImageUploader
         value={block.data.imageUrl}
-        onChange={(e) => onChange({ ...block.data, imageUrl: e.target.value })}
-        placeholder="URL da imagem do banner"
-        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-sagrada-magenta font-niramit"
+        onChange={(imageUrl) => onChange({ ...block.data, imageUrl })}
+        purpose="banner"
+        preview="banner"
       />
       <div className="grid grid-cols-2 gap-3">
         <input
@@ -73,19 +73,6 @@ export default function BannerLinkBlockEditor({ block, onChange }: Props) {
         placeholder="Cor de fundo (opcional, ex: #D195CB)"
         className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-sagrada-magenta font-niramit"
       />
-      {block.data.imageUrl && (
-        <div className="mt-2 rounded-lg overflow-hidden border border-gray-200 relative">
-          <img src={block.data.imageUrl} alt="Preview" className="w-full max-h-48 object-cover" />
-          <div className="absolute inset-0 bg-black/30 flex items-center justify-center">
-            <div className="text-center text-white">
-              <p className="font-amiko font-bold text-lg">{block.data.title || 'Título'}</p>
-              <span className="inline-block mt-2 px-4 py-1 bg-white/20 backdrop-blur rounded-full text-sm">
-                {block.data.linkText || 'Ver mais'}
-              </span>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }

@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { categories } from '@/lib/categories';
 import { ContentBlock } from '@/lib/block-types';
 import BlockEditor from '@/components/admin/BlockEditor';
+import ImageUploader from '@/components/admin/ImageUploader';
 
 export default function NewPostPage() {
   const router = useRouter();
@@ -218,16 +219,11 @@ export default function NewPostPage() {
 
               <div>
                 <label className="block text-sm font-amiko text-gray-700 mb-2">Imagem de Capa</label>
-                <input
-                  type="url"
+                <ImageUploader
                   value={featuredImage}
-                  onChange={(e) => setFeaturedImage(e.target.value)}
-                  placeholder="https://..."
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-sagrada-magenta font-niramit"
+                  onChange={setFeaturedImage}
+                  purpose="thumbnail"
                 />
-                {featuredImage && (
-                  <img src={featuredImage} alt="Preview" className="mt-2 w-full max-h-48 object-cover rounded-lg" />
-                )}
               </div>
 
               <div>

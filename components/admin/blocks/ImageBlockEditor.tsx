@@ -1,6 +1,7 @@
 'use client';
 import React from 'react';
 import { ImageBlock } from '@/lib/block-types';
+import ImageUploader from '../ImageUploader';
 
 interface Props {
   block: ImageBlock;
@@ -10,12 +11,10 @@ interface Props {
 export default function ImageBlockEditor({ block, onChange }: Props) {
   return (
     <div className="space-y-3">
-      <input
-        type="url"
+      <ImageUploader
         value={block.data.url}
-        onChange={(e) => onChange({ ...block.data, url: e.target.value })}
-        placeholder="URL da imagem (https://...)"
-        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-sagrada-magenta font-niramit"
+        onChange={(url) => onChange({ ...block.data, url })}
+        purpose="content"
       />
       <input
         type="text"
@@ -31,11 +30,6 @@ export default function ImageBlockEditor({ block, onChange }: Props) {
         placeholder="Legenda (opcional)"
         className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-sagrada-magenta font-niramit"
       />
-      {block.data.url && (
-        <div className="mt-2 rounded-lg overflow-hidden border border-gray-200">
-          <img src={block.data.url} alt={block.data.alt} className="w-full max-h-64 object-cover" />
-        </div>
-      )}
     </div>
   );
 }
