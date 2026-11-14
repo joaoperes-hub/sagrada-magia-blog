@@ -17,6 +17,7 @@ type Stats = {
   resumo: Record<"hoje" | "7d" | "total", Linha>;
   diario: Dia[];
   origem: Origem[];
+  paginas?: { pagina: string; sessoes: number; sessoes_clique: number }[];
   atualizado: string;
 };
 
@@ -34,8 +35,13 @@ function dataCurta(iso: string) {
   return dt.toLocaleDateString("pt-BR", { weekday: "short", day: "2-digit", month: "2-digit", timeZone: "UTC" });
 }
 
-async function getStats(): Promise<Stats | null> {
-  const { data, error } = await getSupabaseAdmin().rpc("grupovip_stats", { dias: 14 });
+const PAGINAS: Record<string, string> = {
+  grupovip: "Campanha atual (visualização da página)",
+  grupovip2: "Campanha OBJETIVO LEAD",
+};
+
+async function getStats(pagina: string | null): Promise<Stats | null> {
+  const { data, error } = await getSupabaseAdmin().rpc("grupovip_stats", { dias: 14, pagina });
   if (error) {
     console.error("painel grupovip", error);
     return null;
@@ -43,9 +49,15 @@ async function getStats(): Promise<Stats | null> {
   return data as Stats;
 }
 
-export default async function PainelGrupoVip() {
+export default async function PainelGrupoVip({
+  searchParams,
+}: {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+}) {
   await connection();
-  const stats = await getStats();
+  const sp = await searchParams;
+  const pagina = typeof sp.pagina === "string" && sp.pagina in PAGINAS ? sp.pagina : null;
+  const stats = await getStats(pagina);
 
   if (!stats) {
     return (
@@ -81,16 +93,63 @@ export default async function PainelGrupoVip() {
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.3em] text-[#f3c45a]">Sagrada Magia</p>
             <h1 className="mt-1 text-2xl font-bold sm:text-3xl">Painel do Grupo VIP</h1>
-            <a
-              href="/grupovip"
-              target="_blank"
-              className="mt-1 inline-block text-sm text-white/50 underline-offset-2 hover:underline"
-            >
-              blog.sagradamagia.com/grupovip
-            </a>
+            <p className="mt-1 text-sm text-white/50">
+              {pagina ? `blog.sagradamagia.com/${pagina}` : "Todas as páginas"}
+            </p>
           </div>
           <p className="text-xs text-white/50">Atualizado às {atualizado} · atualiza sozinho a cada minuto</p>
         </header>
+
+        <nav className="mt-5 flex flex-wrap gap-2 text-sm">
+          {[{ chave: null, nome: "Todas" }, ...Object.keys(PAGINAS).map((k) => ({ chave: k, nome: `/${k}` }))].map(
+            (t) => (
+              <a
+                key={t.nome}
+                href={t.chave ? `?pagina=${t.chave}` : "?"}
+                className={`rounded-full border px-4 py-1.5 ${
+                  pagina === t.chave
+                    ? "border-[#f3c45a] bg-[#f3c45a]/15 text-[#f3c45a]"
+                    : "border-white/15 text-white/70 hover:border-white/30"
+                }`}
+              >
+                {t.nome}
+              </a>
+            ),
+          )}
+        </nav>
+
+        {!pagina && (stats.paginas?.length ?? 0) > 0 && (
+          <section className="mt-6">
+            <h2 className="text-sm font-semibold uppercase tracking-wider text-white/60">Comparativo das páginas</h2>
+            <div className="mt-3 overflow-hidden rounded-2xl border border-white/10 bg-white/[0.04]">
+              <table className="w-full text-sm">
+                <thead className="text-left text-white/50">
+                  <tr>
+                    <th className="px-4 py-3 font-medium">Página</th>
+                    <th className="px-2 py-3 text-right font-medium">Sessões</th>
+                    <th className="px-2 py-3 text-right font-medium">Clicaram</th>
+                    <th className="px-4 py-3 text-right font-medium">Conversão</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {stats.paginas!.map((pg) => (
+                    <tr key={pg.pagina} className="border-t border-white/10">
+                      <td className="px-4 py-3">
+                        <a href={`?pagina=${pg.pagina}`} className="font-medium hover:underline">
+                          /{pg.pagina}
+                        </a>
+                        <span className="block text-xs text-white/40">{PAGINAS[pg.pagina] ?? ""}</span>
+                      </td>
+                      <td className="px-2 py-3 text-right tabular-nums">{num(pg.sessoes)}</td>
+                      <td className="px-2 py-3 text-right tabular-nums">{num(pg.sessoes_clique)}</td>
+                      <td className="px-4 py-3 text-right font-semibold tabular-nums text-[#f3c45a]">{pct(taxa(pg))}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </section>
+        )}
 
         {/* Destaques do total */}
         <section className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4">

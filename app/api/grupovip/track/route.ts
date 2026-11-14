@@ -7,6 +7,7 @@ export async function POST(request: NextRequest) {
     const body = await request.json().catch(() => null);
     const event = body?.event;
     const sid = typeof body?.sid === "string" ? body.sid.slice(0, 64) : "";
+    const page = ["grupovip", "grupovip2"].includes(body?.page) ? body.page : "grupovip";
     const source = typeof body?.source === "string" ? body.source.slice(0, 40) : null;
 
     if ((event !== "visit" && event !== "click") || !sid) {
@@ -17,6 +18,7 @@ export async function POST(request: NextRequest) {
       .from("grupovip_events")
       .insert({
         event,
+        page,
         session_id: sid,
         source,
         user_agent: request.headers.get("user-agent")?.slice(0, 300) ?? null,

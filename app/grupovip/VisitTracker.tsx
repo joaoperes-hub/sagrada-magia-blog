@@ -3,9 +3,9 @@
 import { useEffect } from "react";
 import { track } from "./track";
 
-export default function VisitTracker() {
+export default function VisitTracker({ pagina }: { pagina: string }) {
   useEffect(() => {
-    track("visit");
-  }, []);
+    track("visit", pagina);
+  }, [pagina]);
   return null;
 }
