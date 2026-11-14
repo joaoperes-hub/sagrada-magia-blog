@@ -9,35 +9,18 @@ declare global {
   }
 }
 
-// Links dos grupos, separados por vírgula, na variável de ambiente da Vercel
-// NEXT_PUBLIC_WHATSAPP_GROUPS. Com mais de um link, cada visitante vai para um
-// deles, dividindo a entrada entre os grupos. Quando um grupo enche, é só tirar
-// o link dele da lista (e colocar o do grupo novo) e fazer um novo deploy.
-const GROUP_LINKS = (process.env.NEXT_PUBLIC_WHATSAPP_GROUPS ?? "")
-  .split(",")
-  .map((l) => l.trim())
-  .filter(Boolean);
+const GROUP_LINK = "https://chat.whatsapp.com/IyRlkBx0N1w9xSg9XWE1av?s=cl&p=i&mlu=4&ilr=4&iam=2";
 
-function pickGroup() {
-  if (GROUP_LINKS.length === 0) return null;
-  return GROUP_LINKS[Math.floor(Math.random() * GROUP_LINKS.length)];
-}
-
-export default function JoinButton({ position }: { position: string }) {
+export default function JoinButton() {
   const [loading, setLoading] = useState(false);
 
   function handleClick() {
-    const link = pickGroup();
-    if (!link) {
-      console.error("NEXT_PUBLIC_WHATSAPP_GROUPS não configurado");
-      return;
-    }
     setLoading(true);
-    window.fbq?.("track", "Lead", { content_name: "Grupo VIP WhatsApp", content_category: position });
-    window.gtag?.("event", "generate_lead", { method: "whatsapp_group", position });
+    window.fbq?.("track", "Lead", { content_name: "Grupo VIP WhatsApp" });
+    window.gtag?.("event", "generate_lead", { method: "whatsapp_group" });
     // Pequena pausa para o pixel enviar o evento antes de sair da página.
     setTimeout(() => {
-      window.location.href = link;
+      window.location.href = GROUP_LINK;
     }, 350);
   }
 
