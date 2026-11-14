@@ -12,13 +12,13 @@ declare global {
 
 const GROUP_LINK = "https://chat.whatsapp.com/IyRlkBx0N1w9xSg9XWE1av?s=cl&p=i&mlu=4&ilr=4&iam=2";
 
-export default function JoinButton() {
+export default function JoinButton({ pagina }: { pagina: string }) {
   const [loading, setLoading] = useState(false);
 
   function handleClick() {
     setLoading(true);
-    track("click");
-    window.fbq?.("track", "Lead", { content_name: "Grupo VIP WhatsApp" });
+    track("click", pagina);
+    window.fbq?.("track", "Lead", { content_name: "Grupo VIP WhatsApp", content_category: pagina });
     window.gtag?.("event", "generate_lead", { method: "whatsapp_group" });
     // Pequena pausa para o pixel enviar o evento antes de sair da página.
     setTimeout(() => {

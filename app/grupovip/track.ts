@@ -43,8 +43,8 @@ export function getSource() {
   return store(SRC_KEY, src) ?? src;
 }
 
-export function track(event: "visit" | "click") {
-  const payload = JSON.stringify({ event, sid: getSid(), source: getSource() });
+export function track(event: "visit" | "click", page: string) {
+  const payload = JSON.stringify({ event, page, sid: getSid(), source: getSource() });
   try {
     if (navigator.sendBeacon) {
       const ok = navigator.sendBeacon("/api/grupovip/track", new Blob([payload], { type: "application/json" }));
