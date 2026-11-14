@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { track } from "./track";
 
 declare global {
   interface Window {
@@ -16,6 +17,7 @@ export default function JoinButton() {
 
   function handleClick() {
     setLoading(true);
+    track("click");
     window.fbq?.("track", "Lead", { content_name: "Grupo VIP WhatsApp" });
     window.gtag?.("event", "generate_lead", { method: "whatsapp_group" });
     // Pequena pausa para o pixel enviar o evento antes de sair da página.
