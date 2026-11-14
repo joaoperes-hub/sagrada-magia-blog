@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import Image from "next/image";
 import Script from "next/script";
 import JoinButton from "./JoinButton";
+import VisitTracker from "./VisitTracker";
 
 const PIXEL_ID = "274714594082035";
 
@@ -25,6 +26,7 @@ export default function GrupoVipPage() {
         href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&display=swap"
         precedence="default"
       />
+      <VisitTracker />
       <Script id="meta-pixel" strategy="afterInteractive">
         {`
           !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?

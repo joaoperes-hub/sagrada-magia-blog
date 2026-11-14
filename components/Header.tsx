@@ -32,7 +32,7 @@ export default function Header() {
   }, [pathname]);
 
   // Don't render on admin pages
-  if (pathname?.startsWith('/admin') || pathname?.startsWith('/grupovip')) return null;
+  if (pathname?.startsWith('/admin') || pathname?.startsWith('/grupovip') || pathname?.startsWith('/painel-')) return null;
 
   return (
     <header
